@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title }}</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; }
+    main { padding: 24px; max-width: 900px; margin: 0 auto; }
+    .card { padding: 16px; border: 1px solid rgba(127,127,127,.25); border-radius: 12px; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+<body>
+  <main>
+    <p><a href="/">Back</a></p>
+    <section class="card">
+      <h2>{{ item.title }}</h2>
+      <p><small>Kind: {{ item.kind }} | Created: {{ item.created_at }}</small></p>
+      {% if item.tags %}
+      <p>Tags:
+        {% for tag in item.tags %}
+        <code>{{ tag.name }}</code>
+        {% endfor %}
+      </p>
+      {% endif %}
+      <pre>{{ item.body }}</pre>
+    </section>
+  </main>
+</body>
+</html>

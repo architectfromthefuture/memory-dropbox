@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-dropbox-api
+  namespace: memory-dropbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-dropbox-api
+  template:
+    metadata:
+      labels:
+        app: memory-dropbox-api
+    spec:
+      containers:
+        - name: api
+          image: memory-dropbox-api:latest
+          ports:
+            - containerPort: 8000
+

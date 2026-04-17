@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memory-dropbox-worker
+  namespace: memory-dropbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memory-dropbox-worker
+  template:
+    metadata:
+      labels:
+        app: memory-dropbox-worker
+    spec:
+      containers:
+        - name: worker
+          image: memory-dropbox-worker:latest
+

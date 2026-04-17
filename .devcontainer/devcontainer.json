@@ -1,0 +1,29 @@
+{
+  "name": "Memory Dropbox",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true
+    }
+  },
+  "postCreateCommand": "bash -c 'test -f .env || cp .env.example .env; pip install --user -r requirements-dev.txt && pip install --user -r requirements.txt'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/usr/local/bin/python"
+      }
+    }
+  },
+  "forwardPorts": [8000, 5432, 6379, 6333],
+  "portsAttributes": {
+    "8000": {
+      "label": "API / UI",
+      "onAutoForward": "notify"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+.venv/
+venv/
+ENV/
+
+.env
+.env.*
+!.env.example
+
+*.log
+
+# Docker
+*.pid
+
+# Local data
+data/
+
+# IDE
+.idea/
+.vscode/
+
