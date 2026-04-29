@@ -1,5 +1,7 @@
 # Architecture
 
+Memory Dropbox is a Docker-first memory substrate: ingest paths persist to PostgreSQL, indexing runs asynchronously via Redis and the worker, and retrieval combines keyword and vector search.
+
 ## Data flow
 
 1. Client sends raw text/file to ingestion API.

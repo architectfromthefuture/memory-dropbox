@@ -1,4 +1,4 @@
-.PHONY: up down logs demo lint migrate
+.PHONY: up down logs demo lint migrate test compose-config
 
 up:
 	docker compose up --build
@@ -16,5 +16,11 @@ demo:
 	python scripts/demo.py
 
 lint:
-	python -m py_compile $$(rg --files -g '*.py')
+	python -m ruff check packages apps
+	python -m compileall -q packages apps
 
+test:
+	pytest
+
+compose-config:
+	docker compose config --quiet

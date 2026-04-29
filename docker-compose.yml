@@ -39,10 +39,12 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_HOST: 127.0.0.1
-      REDIS_HOST: 127.0.0.1
-      QDRANT_HOST: 127.0.0.1
-    network_mode: host
+      # Bridge network: reach sibling containers by Compose service name.
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+      QDRANT_HOST: qdrant
+    ports:
+      - "${API_PORT:-8000}:8000"
     command: sh -c "python /app/apps/api/app/wait_for_services.py && alembic -c /app/alembic.ini upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     depends_on:
       postgres:

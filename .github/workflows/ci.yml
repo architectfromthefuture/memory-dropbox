@@ -31,6 +31,29 @@ jobs:
       - name: Byte-compile
         run: python -m compileall -q packages apps
 
+      - name: Validate .env.example keys
+        run: |
+          for key in POSTGRES_DB REDIS_HOST QDRANT_HOST EMBEDDING_DIM; do
+            grep -q "^${key}=" .env.example || { echo "missing ${key} in .env.example"; exit 1; }
+          done
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install dev dependencies
+        run: pip install -r requirements-dev.txt
+
+      - name: Pytest
+        run: python -m pytest tests -q
+
   compose:
     runs-on: ubuntu-latest
     steps:

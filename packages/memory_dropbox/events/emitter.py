@@ -1,7 +1,7 @@
 import logging
 from sqlalchemy import select
 
-from memory_dropbox.db.models import DerivedMemory, Event
+from memory_dropbox.db.models import DerivedMemory, Event, ObservationMemory
 from memory_dropbox.db.session import SessionLocal
 from memory_dropbox.events.derive_memory import add_derived_memories_for_event
 from memory_dropbox.events.types import EventPayload, EventRecord, EventType
@@ -62,6 +62,24 @@ def get_derived_memories(limit: int = 100) -> list[dict[str, object]]:
             "filename": row.filename,
             "chunk_count": row.chunk_count,
             "timestamp": row.timestamp.isoformat(),
+        }
+        for row in rows
+    ]
+
+
+def get_observation_memories(limit: int = 100) -> list[dict[str, object]]:
+    with SessionLocal() as db:
+        rows = db.scalars(
+            select(ObservationMemory).order_by(ObservationMemory.timestamp.desc()).limit(limit)
+        ).all()
+    return [
+        {
+            "observation_type": row.observation_type,
+            "content": row.content,
+            "filename": row.filename,
+            "chunk_count": row.chunk_count,
+            "timestamp": row.timestamp.isoformat(),
+            "source_event_id": str(row.source_event_id),
         }
         for row in rows
     ]

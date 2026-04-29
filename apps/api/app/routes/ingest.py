@@ -13,14 +13,29 @@ from memory_dropbox.services.indexing import create_index_job
 router = APIRouter()
 
 
-@router.post("/text", response_model=ItemRead)
+@router.post(
+    "/text",
+    response_model=ItemRead,
+    summary="Ingest pasted text",
+    description="Creates one memory item from JSON (title, body, tags, …) and enqueues indexing.",
+)
 async def ingest_text(payload: ItemCreate, db: Session = Depends(get_db)):
     item = create_item(db, payload, source_type="paste")
     create_index_job(db, item)
     return item_to_read(item)
 
 
-@router.post("/file", response_model=list[ItemRead])
+@router.post(
+    "/file",
+    response_model=list[ItemRead],
+    summary="Ingest a text-like file",
+    description=(
+        "Reads the uploaded bytes as UTF-8 (invalid sequences ignored) and splits on blank lines "
+        "into separate memory items. Intended for plain text and Markdown (`.txt`, `.md`). "
+        "PDF and other binary formats are not parsed here—use a dedicated extractor or connector "
+        "(e.g. a pdf-intelligence pipeline) when you add document extraction."
+    ),
+)
 async def ingest_file(
     file: UploadFile = File(...),
     kind: str = Form(default="note"),

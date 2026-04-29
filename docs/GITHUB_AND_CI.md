@@ -22,7 +22,7 @@ git push -u origin master   # or: git push -u origin main
 ## 2. Confirm CI
 
 - Open **Actions** on the repo; the **CI** workflow should run on every push and PR to `main` / `master`.  
-- Jobs: **lint** (Ruff + byte-compile) and **compose** (`docker compose config`).
+- Jobs: **lint** (Ruff + byte-compile + `.env.example` keys), **test** (`pytest`), **compose** (`docker compose config`).
 
 ## 3. GitHub Codespaces
 
@@ -36,7 +36,7 @@ docker compose up --build
 
 - Use the **Ports** tab to open the forwarded UI/API (port `8000`).
 
-**Note:** Local Compose uses `network_mode: host` for the API service; if anything behaves oddly in Codespaces, prefer validating with `docker compose config` and adjust networking in a follow-up for cloud environments.
+**Note:** Compose puts the API on the default bridge network with published port `${API_PORT:-8000}:8000`, so the stack behaves consistently on Linux, macOS (Docker Desktop), and typical Codespaces setups. Validate with `docker compose config` if you extend services.
 
 ## 4. Showing “the whole process” (optional next steps)
 

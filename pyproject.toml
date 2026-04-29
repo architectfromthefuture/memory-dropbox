@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "memory-dropbox"
 version = "0.1.0"
-description = "Docker-first brain dump and retrieval framework"
+description = "Docker-first memory substrate prototype (capture, events, retrieval)"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -31,4 +31,10 @@ src = ["packages", "apps"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W"]
+# Alembic and SQLAlchemy definitions commonly exceed 100 cols; keep signal from other rules.
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["packages", "apps/api"]
 

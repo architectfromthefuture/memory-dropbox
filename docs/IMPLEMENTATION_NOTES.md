@@ -27,6 +27,9 @@ The repository is intended to show progression. These notes make the operational
    - Investigated host-to-container reset behavior on `:8000`.
    - Added explicit notes for using `127.0.0.1` when `localhost` behavior is inconsistent.
 
+6. **Compose networking (current)**
+   - API uses the default Docker bridge and connects to Postgres/Redis/Qdrant via Compose service names (not `network_mode: host`), for portability across Docker Desktop and Linux.
+
 ## Current expected startup path
 
 1. `docker compose up --build -d`

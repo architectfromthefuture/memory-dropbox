@@ -5,72 +5,220 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{{ title }}</title>
   <style>
-    :root { color-scheme: light dark; }
-    body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; margin: 0; }
-    header { padding: 24px; border-bottom: 1px solid rgba(127,127,127,.25); }
-    main { padding: 24px; max-width: 1100px; margin: 0 auto; display: grid; gap: 16px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .card { padding: 16px; border: 1px solid rgba(127,127,127,.25); border-radius: 12px; background: rgba(127,127,127,.04); }
-    .muted { opacity: .75; }
-    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
-    a { color: inherit; }
-    input, textarea, select, button { width: 100%; margin-top: 8px; padding: 10px; border-radius: 8px; border: 1px solid rgba(127,127,127,.35); background: transparent; color: inherit; }
-    button { cursor: pointer; }
-    ul { padding-left: 18px; }
-    pre { max-height: 300px; overflow: auto; padding: 12px; border-radius: 10px; border: 1px solid rgba(127,127,127,.25); }
+    :root {
+      color-scheme: light dark;
+      --border: rgba(127,127,127,.28);
+      --bg-soft: rgba(127,127,127,.06);
+      --accent: #6ee7b7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      margin: 0;
+      background: var(--bg-body, #0f1419);
+      color: #e8eaed;
+      min-height: 100vh;
+    }
+    header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(110,231,183,.08), transparent);
+    }
+    header h1 { margin: 0 0 6px; font-size: 1.35rem; font-weight: 650; letter-spacing: -0.02em; }
+    header .sub { opacity: .82; font-size: .92rem; max-width: 720px; line-height: 1.45; }
+    header nav { margin-top: 10px; font-size: .85rem; opacity: .85; }
+    header a { color: var(--accent); text-decoration: none; }
+    header a:hover { text-decoration: underline; }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.95fr) minmax(300px, 1.15fr) minmax(280px, 1fr);
+      gap: 14px;
+      padding: 16px;
+      align-items: start;
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1024px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+    .panel {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: var(--bg-soft);
+    }
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      opacity: .72;
+      font-weight: 600;
+    }
+    label { display: block; font-size: .82rem; margin-top: 8px; opacity: .88; }
+    input, textarea, select, button {
+      width: 100%;
+      margin-top: 4px;
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,.2);
+      color: inherit;
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+      margin-top: 10px;
+      font-weight: 600;
+      background: rgba(110,231,183,.16);
+      border-color: rgba(110,231,183,.35);
+    }
+    button:hover { background: rgba(110,231,183,.26); }
+    button.secondary {
+      background: transparent;
+      font-weight: 500;
+      padding: 8px 10px;
+      font-size: .85rem;
+      margin-top: 8px;
+    }
+    .muted { opacity: .72; font-size: .82rem; margin-top: 8px; line-height: 1.4; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: .88em; }
+    ul.trail-list { list-style: none; padding: 0; margin: 0 0 12px; max-height: 160px; overflow: auto; }
+    ul.trail-list li {
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      margin-bottom: 4px;
+      font-size: .9rem;
+    }
+    ul.trail-list li:hover, ul.trail-list li.active {
+      background: rgba(110,231,183,.1);
+      border-color: rgba(110,231,183,.22);
+    }
+    .trail-detail {
+      border: 1px dashed var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 120px;
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+    .trail-detail pre {
+      margin: 10px 0 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font: inherit;
+      opacity: .95;
+    }
+    .result-card {
+      padding: 10px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 8px;
+      font-size: .86rem;
+      background: rgba(0,0,0,.15);
+    }
+    .result-card .score { float: right; opacity: .65; font-size: .78rem; }
+    .result-card .src { font-size: .74rem; opacity: .55; margin-top: 4px; }
+    #searchResultsArea { max-height: 280px; overflow: auto; margin-top: 8px; }
+    #eventTraceArea {
+      max-height: 200px;
+      overflow: auto;
+      font-size: .78rem;
+      margin-top: 8px;
+      opacity: .92;
+    }
+    #eventTraceArea div { padding: 6px 0; border-bottom: 1px solid rgba(127,127,127,.15); }
+    .activity-bar { display: flex; gap: 14px; font-size: .82rem; margin-bottom: 8px; opacity: .85; }
   </style>
 </head>
 <body>
   <header>
-    <strong>Memory Dropbox</strong>
-    <div class="muted">Brain dump -> index -> retrieve (Postgres + Redis + Qdrant)</div>
-    <div class="muted">Docs: <a href="/docs"><code>/docs</code></a> | Health: <a href="/health"><code>/health</code></a></div>
-  </header>
-  <main>
-    <div class="grid">
-      <section class="card">
-        <h3>Capture</h3>
-        <label>Title</label>
-        <input id="title" placeholder="Quick title" />
-        <label>Body</label>
-        <textarea id="body" rows="7" placeholder="Paste your raw notes here..."></textarea>
-        <label>Tags (comma-separated)</label>
-        <input id="tags" placeholder="memory, swarm, architecture" />
-        <button onclick="ingestText()">Save to memory</button>
-        <div id="captureStatus" class="muted"></div>
-      </section>
-
-      <section class="card">
-        <h3>Search</h3>
-        <label>Query</label>
-        <input id="query" placeholder="swarm architecture memory layer" />
-        <label>Mode</label>
-        <select id="mode">
-          <option value="keyword">keyword</option>
-          <option value="semantic">semantic</option>
-          <option value="hybrid" selected>hybrid</option>
-        </select>
-        <button onclick="runSearch()">Run search</button>
-        <pre id="searchResults">[]</pre>
-      </section>
+    <h1>Memory Dropbox</h1>
+    <div class="sub">
+      Event-first memory substrate: capture &rarr; persist &rarr; index &rarr; keyword / semantic / hybrid search.
+      Prototype—inspectable stack, not a production assistant.
     </div>
+    <nav>
+      <a href="/docs"><code>/docs</code></a> · <a href="/health"><code>/health</code></a> · <a href="/ui/memory"><code>/ui/memory</code></a>
+    </nav>
+  </header>
 
-    <section class="card">
-      <h3>Recent items</h3>
+  <div class="layout">
+    <section class="panel" aria-label="Capture">
+      <h2>Capture</h2>
+      <label>Title</label>
+      <input id="title" placeholder="Short label" autocomplete="off" />
+      <label>Body</label>
+      <textarea id="body" rows="6" placeholder="Notes, paste, scratch thinking…"></textarea>
+      <label>Tags (comma-separated)</label>
+      <input id="tags" placeholder="research, architecture, swarm" autocomplete="off" />
+      <button type="button" onclick="ingestText()">Save to memory</button>
+      <div id="captureStatus" class="muted"></div>
+
+      <hr style="border: none; border-top: 1px solid var(--border); margin: 16px 0;" />
+
+      <h2>Upload (text-like)</h2>
+      <p class="muted">
+        UTF-8 body, split on blank lines into items. Use <code>.txt</code> / <code>.md</code>.
+        PDF and binary formats are <strong>not</strong> extracted here.
+      </p>
+      <form id="fileForm">
+        <label>File</label>
+        <input type="file" name="file" accept=".txt,.md,text/plain" required />
+        <label>Tags</label>
+        <input type="text" name="tags" placeholder="optional, comma-separated" />
+        <input type="hidden" name="kind" value="note" />
+        <button type="submit">Upload &amp; ingest</button>
+      </form>
+      <div id="uploadStatus" class="muted"></div>
+    </section>
+
+    <section class="panel" aria-label="Rabbit trail">
+      <h2>Rabbit trail</h2>
+      <p class="muted" style="margin-top:0">Pick a recent memory to inspect; opens full page via link.</p>
       {% if items %}
-      <ul>
+      <ul class="trail-list" id="trailList">
         {% for item in items %}
-        <li>
-          <a href="/ui/items/{{ item.id }}"><strong>{{ item.title }}</strong></a>
-          <small>({{ item.kind }})</small> - <small>{{ item.created_at }}</small>
+        <li data-id="{{ item.id }}" onclick="selectTrail(this)">
+          <strong>{{ item.title }}</strong>
+          <span class="muted"> · {{ item.kind }}</span>
         </li>
         {% endfor %}
       </ul>
       {% else %}
-      <p>No items yet. Use Capture above.</p>
+      <p class="muted">No items yet—use Capture or Upload.</p>
       {% endif %}
+      <div id="trailDetail" class="trail-detail">
+        <span class="muted">Select an item or search on the right.</span>
+      </div>
+      <a id="trailFullLink" class="muted" href="#" style="display:none;margin-top:10px;">Open full page →</a>
     </section>
-  </main>
+
+    <section class="panel" aria-label="Search and trace">
+      <h2>Search &amp; trace</h2>
+      <div class="activity-bar" id="activityBar">
+        <span>Loading activity…</span>
+      </div>
+      <label>Query</label>
+      <input id="query" placeholder="keywords or phrases…" />
+      <label>Mode</label>
+      <select id="mode">
+        <option value="keyword">keyword</option>
+        <option value="semantic">semantic</option>
+        <option value="hybrid" selected>hybrid</option>
+      </select>
+      <button type="button" onclick="runSearch()">Search</button>
+      <div id="searchResultsArea"></div>
+
+      <hr style="border: none; border-top: 1px solid var(--border); margin: 14px 0;" />
+
+      <h2>Event trace</h2>
+      <button type="button" class="secondary" onclick="loadEventTrace()">Refresh trace</button>
+      <div id="eventTraceArea" class="muted">Loading…</div>
+    </section>
+  </div>
 
   <script>
     async function ingestText() {
@@ -93,26 +241,128 @@
         return;
       }
       const data = await res.json();
-      status.textContent = `Saved item ${data.id}. Refresh to see in recent list.`;
+      status.textContent = `Saved ${data.id}. Reload the page to see it in Rabbit trail.`;
+    }
+
+    document.getElementById("fileForm").addEventListener("submit", async (ev) => {
+      ev.preventDefault();
+      const form = ev.target;
+      const fd = new FormData(form);
+      const status = document.getElementById("uploadStatus");
+      status.textContent = "Uploading…";
+      const res = await fetch("/ingest/file", { method: "POST", body: fd });
+      if (!res.ok) {
+        status.textContent = "Upload failed.";
+        return;
+      }
+      const data = await res.json();
+      status.textContent = `Created ${data.length} chunk(s). Reload to refresh the trail list.`;
+      form.reset();
+    });
+
+    let selectedId = null;
+
+    function selectTrail(li) {
+      document.querySelectorAll("#trailList li").forEach((el) => el.classList.remove("active"));
+      li.classList.add("active");
+      const id = li.getAttribute("data-id");
+      selectedId = id;
+      loadTrailItem(id);
+    }
+
+    async function loadTrailItem(id) {
+      const box = document.getElementById("trailDetail");
+      const link = document.getElementById("trailFullLink");
+      box.innerHTML = '<span class="muted">Loading…</span>';
+      const res = await fetch(`/items/${id}`);
+      if (!res.ok) {
+        box.innerHTML = '<span class="muted">Could not load item.</span>';
+        return;
+      }
+      const item = await res.json();
+      box.innerHTML = `<strong>${escapeHtml(item.title)}</strong><br/><small class="muted">${item.kind} · ${item.created_at}</small><pre>${escapeHtml(item.body)}</pre>`;
+      link.href = `/ui/items/${id}`;
+      link.style.display = "inline-block";
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
     }
 
     async function runSearch() {
       const query = document.getElementById("query").value.trim();
       const mode = document.getElementById("mode").value;
-      const el = document.getElementById("searchResults");
+      const area = document.getElementById("searchResultsArea");
       if (!query) {
-        el.textContent = "[]";
+        area.innerHTML = "";
         return;
       }
       let path = "/search";
       if (mode === "semantic") path = "/search/semantic";
       if (mode === "hybrid") path = "/search/hybrid";
-      const params = new URLSearchParams({ query, limit: "8" });
+      const params = new URLSearchParams({ query, limit: "12" });
       const res = await fetch(`${path}?${params.toString()}`);
       const data = await res.json();
-      el.textContent = JSON.stringify(data, null, 2);
+      if (!Array.isArray(data) || data.length === 0) {
+        area.innerHTML = '<p class="muted">No results.</p>';
+        return;
+      }
+      area.innerHTML = data.map((row) => {
+        const it = row.item;
+        const score = typeof row.score === "number" ? row.score.toFixed(4) : row.score;
+        return `<div class="result-card" data-id="${it.id}" onclick="openFromSearch('${it.id}')">
+          <span class="score">${score}</span>
+          <strong>${escapeHtml(it.title)}</strong>
+          <div class="src">${escapeHtml(row.source || "")}</div>
+          <div class="muted" style="margin-top:6px;font-size:.8rem;">${escapeHtml(it.body.slice(0, 180))}${it.body.length > 180 ? "…" : ""}</div>
+        </div>`;
+      }).join("");
     }
+
+    function openFromSearch(id) {
+      const li = document.querySelector(`#trailList li[data-id="${id}"]`);
+      if (li) selectTrail(li);
+      else loadTrailItem(id);
+      document.getElementById("trailFullLink").href = `/ui/items/${id}`;
+      document.getElementById("trailFullLink").style.display = "inline-block";
+    }
+
+    async function loadActivity() {
+      const bar = document.getElementById("activityBar");
+      try {
+        const res = await fetch("/memory/activity");
+        if (!res.ok) throw new Error();
+        const j = await res.json();
+        bar.innerHTML = `<span><code>items</code>: ${j.items}</span><span><code>events</code>: ${j.events}</span>`;
+      } catch {
+        bar.innerHTML = '<span class="muted">Activity unavailable (database down?)</span>';
+      }
+    }
+
+    async function loadEventTrace() {
+      const el = document.getElementById("eventTraceArea");
+      el.innerHTML = "Loading…";
+      try {
+        const res = await fetch("/events?limit=12");
+        if (!res.ok) throw new Error();
+        const j = await res.json();
+        const rows = j.events || [];
+        if (!rows.length) {
+          el.innerHTML = '<span class="muted">No events yet.</span>';
+          return;
+        }
+        el.innerHTML = rows.map((ev) =>
+          `<div><strong>${escapeHtml(ev.event_type)}</strong> · ${escapeHtml(ev.timestamp || "")}<br/><small>${escapeHtml(JSON.stringify(ev.payload).slice(0, 120))}…</small></div>`
+        ).join("");
+      } catch {
+        el.innerHTML = '<span class="muted">Trace unavailable (database down?)</span>';
+      }
+    }
+
+    loadActivity();
+    loadEventTrace();
   </script>
 </body>
 </html>
-
