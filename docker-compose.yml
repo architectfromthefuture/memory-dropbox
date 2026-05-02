@@ -36,13 +36,20 @@ services:
     build:
       context: .
       dockerfile: infra/docker/Dockerfile.api
-    env_file:
-      - .env
     environment:
       # Bridge network: reach sibling containers by Compose service name.
+      POSTGRES_DB: ${POSTGRES_DB:-memory_dropbox}
+      POSTGRES_USER: ${POSTGRES_USER:-memory_dropbox}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-memory_dropbox}
       POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
       REDIS_HOST: redis
+      REDIS_PORT: 6379
       QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-memory_items}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-384}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     ports:
       - "${API_PORT:-8000}:8000"
     command: sh -c "python /app/apps/api/app/wait_for_services.py && alembic -c /app/alembic.ini upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
@@ -58,12 +65,19 @@ services:
     build:
       context: .
       dockerfile: infra/docker/Dockerfile.worker
-    env_file:
-      - .env
     environment:
+      POSTGRES_DB: ${POSTGRES_DB:-memory_dropbox}
+      POSTGRES_USER: ${POSTGRES_USER:-memory_dropbox}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-memory_dropbox}
       POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
       REDIS_HOST: redis
+      REDIS_PORT: 6379
       QDRANT_HOST: qdrant
+      QDRANT_PORT: 6333
+      QDRANT_COLLECTION: ${QDRANT_COLLECTION:-memory_items}
+      EMBEDDING_DIM: ${EMBEDDING_DIM:-384}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
     depends_on:
       postgres:
         condition: service_healthy
